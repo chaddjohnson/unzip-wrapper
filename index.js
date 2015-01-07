@@ -46,10 +46,12 @@ module.exports = function(archivePath, options, unzipCallback) {
 
     // Ensure the file exists and is not zero bytes.
     if (!fs.existsSync(archivePath)) {
-        throw 'File does not exist';
+        unzipCallback('File does not exist');
+        return;
     }
     if (archiveFileStats.size == 0) {
-        throw 'File is zero bytes';
+        unzipCallback('File is zero bytes');
+        return;
     }
 
     var defaultOptions = {
@@ -96,8 +98,6 @@ module.exports = function(archivePath, options, unzipCallback) {
             callback();
         }
     ], function(error) {
-        if (error) {
-            throw error;
-        }
+        unzipCallback(error);
     });
 };
