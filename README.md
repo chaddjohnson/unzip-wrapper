@@ -13,8 +13,8 @@ unzip(archivePath, [options], [callback]);
 ```
 var unzip = require('unzip-wrapper');
 unzip('/path/to/file.zip', {fix: true}, function(err) {
-    if (error) {
-        console.log(error.message);
+    if (err) {
+        console.log(err.message);
         return;
     }
 
