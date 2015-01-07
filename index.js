@@ -27,7 +27,7 @@ function fixErrors(archivePath, callback) {
         fs.unlinkSync(archivePath);
 
         // Move the fixed archive file in place of the original.
-        fs.rename(fixedArchivePath, archivePath);
+        fs.renameSync(fixedArchivePath, archivePath);
 
         callback();
     });
