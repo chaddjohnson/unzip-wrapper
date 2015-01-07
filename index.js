@@ -93,14 +93,10 @@ module.exports = function(archivePath, options, unzipCallback) {
         },
         function(callback) {
             unzipArchive(archivePath, options.target, callback);
-        },
-        function(callback) {
-            if (typeof unzipCallback == 'function') {
-                unzipCallback();
-            }
-            callback();
         }
     ], function(error) {
-        unzipCallback(error);
+        if (typeof unzipCallback == 'function') {
+            unzipCallback(error);
+        }
     });
 };
