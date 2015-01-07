@@ -41,7 +41,7 @@ function unzipArchive(archivePath, targetDirectory, callback) {
     });
 }
 
-module.exports = function(archivePath, targetDirectory) {
+module.exports = function(archivePath, targetDirectory, options) {
     var archiveFileStats = fs.statSync(archivePath);
 
     // Ensure the file exists and is not zero bytes.
@@ -52,15 +52,39 @@ module.exports = function(archivePath, targetDirectory) {
         throw 'File is zero bytes';
     }
 
-    // Default target directory to the same directory the archive is in.
-    targetDirectory = targetDirectory || path.dirname(archivePath);
+    var defaultOptions = {fix: false};
+
+    // If options is specified in place of targetDirectory, use the targetDirectory parameter
+    // as options, and set a default for targetDirectory.
+    if (!options && typeof targetDirectory == 'object') {
+        options = targetDirectory;
+
+        // Default target directory to the same directory the archive is in.
+        targetDirectory = path.dirname(archivePath);
+    }
+
+    // If both targetDirectory and options are not provided, set defaults for both.
+    if (!targetDirectory && !options) {
+        // Default target directory to the same directory the archive is in.
+        targetDirectory = path.dirname(archivePath);
+
+        // Default options.
+        options = defaultOptions;
+    }
+
+    options = options || defaultOptions;
 
     async.waterfall([
         function(callback) {
-            checkForErrors(archivePath, callback);
+            if (options.fix) {
+                checkForErrors(archivePath, callback);
+            }
+            else {
+                callback(null, false);
+            }
         },
         function(errorFound, callback) {
-            if (errorFound) {
+            if (options.fix && errorFound) {
                 fixErrors(archivePath, callback);
             }
             else {
