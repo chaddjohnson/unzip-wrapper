@@ -19,7 +19,7 @@ function fixErrors(archivePath, callback) {
     // Try to fix the error.
     exec(fixArchiveCommand, function(error, stdout, stderr) {
         if (error) {
-            callback(error);
+            callback('Unable to fix archive');
             return;
         }
 
@@ -42,18 +42,6 @@ function unzipArchive(archivePath, targetDirectory, callback) {
 }
 
 module.exports = function(archivePath, options, unzipCallback) {
-    var archiveFileStats = fs.statSync(archivePath);
-
-    // Ensure the file exists and is not zero bytes.
-    if (!fs.existsSync(archivePath)) {
-        unzipCallback('File does not exist');
-        return;
-    }
-    if (archiveFileStats.size == 0) {
-        unzipCallback('File is zero bytes');
-        return;
-    }
-
     var defaultOptions = {
         target: path.dirname(archivePath),
         fix: false
@@ -69,6 +57,21 @@ module.exports = function(archivePath, options, unzipCallback) {
         if (!options.hasOwnProperty(property)) {
             options[property] = defaultOptions[property];
         }
+    }
+
+    try {
+        var archiveFileStats = fs.statSync(archivePath);
+
+        // Ensure the file is not zero bytes.
+        if (archiveFileStats.size == 0) {
+            unzipCallback('File is zero bytes');
+            return;
+        }
+    }
+    catch (error) {
+        // File does not exist.
+        unzipCallback(error);
+        return;
     }
 
     async.waterfall([
