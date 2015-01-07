@@ -1,6 +1,6 @@
 {
   "name": "unzip-wrapper",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Wrapper for native unzip UNIX binary",
   "main": "index.js",
   "repository": {

@@ -41,7 +41,7 @@ function unzipArchive(archivePath, targetDirectory, callback) {
     });
 }
 
-module.exports = function(archivePath, targetDirectory, options) {
+module.exports = function(archivePath, options, unzipCallback) {
     var archiveFileStats = fs.statSync(archivePath);
 
     // Ensure the file exists and is not zero bytes.
@@ -52,27 +52,22 @@ module.exports = function(archivePath, targetDirectory, options) {
         throw 'File is zero bytes';
     }
 
-    var defaultOptions = {fix: false};
+    var defaultOptions = {
+        target: path.dirname(archivePath),
+        fix: false
+    };
 
-    // If options is specified in place of targetDirectory, use the targetDirectory parameter
-    // as options, and set a default for targetDirectory.
-    if (!options && typeof targetDirectory == 'object') {
-        options = targetDirectory;
-
-        // Default target directory to the same directory the archive is in.
-        targetDirectory = path.dirname(archivePath);
+    if (typeof options == 'function') {
+        unzipCallback = options;
     }
 
-    // If both targetDirectory and options are not provided, set defaults for both.
-    if (!targetDirectory && !options) {
-        // Default target directory to the same directory the archive is in.
-        targetDirectory = path.dirname(archivePath);
-
-        // Default options.
-        options = defaultOptions;
+    // Add any missing properties from defaultOptions into options.
+    options = options || {};
+    for (var property in defaultOptions) {
+        if (!options.hasOwnProperty(property)) {
+            options[property] = defaultOptions[property];
+        }
     }
-
-    options = options || defaultOptions;
 
     async.waterfall([
         function(callback) {
@@ -92,7 +87,13 @@ module.exports = function(archivePath, targetDirectory, options) {
             }
         },
         function(callback) {
-            unzipArchive(archivePath, targetDirectory, callback);
+            unzipArchive(archivePath, options.target, callback);
+        },
+        function(callback) {
+            if (typeof unzipCallback == 'function') {
+                unzipCallback();
+            }
+            callback();
         }
     ], function(error) {
         if (error) {
