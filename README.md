@@ -5,14 +5,16 @@ This package wraps the native 'unzip' UNIX binary on *NIX machines.
 ### Usage:
 
 ```
-unzip(archivePath, [options]);
+unzip(archivePath, [options], [callback]);
 ```
 
 ### Example:
 
 ```
 var unzip = require('unzip-wrapper');
-unzip('/path/to/file.zip');
+unzip('/path/to/file.zip', {fix: true}, function() {
+    console.log('Unzipping done!');
+});
 ```
 
 You can also pass options:
@@ -22,7 +24,7 @@ var options = {
     fix: true,
     target: '/path/to/target/dir'
 };
-unzip('/path/to/file.zip');
+unzip('/path/to/file.zip', options);
 ```
 
 The following options are available:
