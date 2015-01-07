@@ -1,7 +1,7 @@
 {
   "name": "unzip-wrapper",
   "version": "0.0.1",
-  "description": "UNIX-only wrapper for unzip bin which tests for and repairs errors on zip files if found prior to extraction.",
+  "description": "Wrapper for native unzip UNIX binary",
   "main": "index.js",
   "repository": {
     "type": "git",
