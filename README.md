@@ -1,6 +1,6 @@
 unzip-wrapper
 =============
-This package wraps the native 'unzip' UNIX binary on *NIX machines.
+This package wraps the native 'unzip' binary on *NIX machines.
 
 ### Usage:
 
