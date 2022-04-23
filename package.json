@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/chaddjohnson/unzip-wrapper",
   "dependencies": {
-    "async": "~0.9.0"
+    "async": "~3.2.3"
   }
 }
